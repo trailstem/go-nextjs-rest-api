@@ -11,7 +11,6 @@ import (
 )
 
 func NewDB() *gorm.DB {
-	// 環境変数GO_ENVからDBの接続先を取得処理
 	if os.Getenv("GO_ENV") == "dev" {
 		err := godotenv.Load()
 		if err != nil {
@@ -22,10 +21,17 @@ func NewDB() *gorm.DB {
 		os.Getenv("POSTGRES_PW"), os.Getenv("POSTGRES_HOST"),
 		os.Getenv("POSTGRES_PORT"), os.Getenv("POSTGRES_DB"))
 	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
-
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("Connected")
+	fmt.Println("Connceted")
 	return db
+}
+
+// DB Close処理
+func CloseDB(db *gorm.DB) {
+	sqlDB, _ := db.DB()
+	if err := sqlDB.Close(); err != nil {
+		log.Fatalln(err)
+	}
 }
