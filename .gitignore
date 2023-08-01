@@ -1,0 +1,5 @@
+# envファイルを除外
+*env
+
+#DS_Store
+.DS_Store
