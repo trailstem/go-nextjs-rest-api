@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+// ユーザー構造体
 type User struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
 	Email     string    `json:"email" gorm:"unique"`
@@ -10,6 +11,7 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// GETリクエストに対してクライアントに返却するユーザー構造体
 type UserResponse struct {
 	ID    uint   `json:"id" gorm:"primaryKey"`
 	Email string `json:"email" gorm:"unique"`
