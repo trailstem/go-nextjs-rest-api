@@ -2,7 +2,6 @@ package model
 
 import "time"
 
-// タスク構造体
 type Task struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
 	Title     string    `json:"title" gorm:"not null"`
@@ -12,7 +11,6 @@ type Task struct {
 	UserId    uint      `json:"user_id" gorm:"not null"`
 }
 
-// GETリクエストに対してクライアントに返却するタスク構造体
 type TaskResponse struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
 	Title     string    `json:"title" gorm:"not null"`

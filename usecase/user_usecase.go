@@ -10,7 +10,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// usecase層のinterface
 type IUserUsecase interface {
 	SignUp(user model.User) (model.UserResponse, error)
 	Login(user model.User) (string, error)
@@ -20,11 +19,10 @@ type userUsecase struct {
 	ur repository.IUserRepository
 }
 
-/*
-以下usecase具体実装
-*/
+func NewUserUsecase(ur repository.IUserRepository) IUserUsecase {
+	return &userUsecase{ur}
+}
 
-// SignUp implements IUserUsecase.
 func (uu *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
@@ -39,12 +37,11 @@ func (uu *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
 		ID:    newUser.ID,
 		Email: newUser.Email,
 	}
-
 	return resUser, nil
 }
 
-// Login implements IUserUsecase.
 func (uu *userUsecase) Login(user model.User) (string, error) {
+
 	storedUser := model.User{}
 	if err := uu.ur.GetUserByEmail(&storedUser, user.Email); err != nil {
 		return "", err
@@ -58,13 +55,8 @@ func (uu *userUsecase) Login(user model.User) (string, error) {
 		"exp":     time.Now().Add(time.Hour * 12).Unix(),
 	})
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
-
 	if err != nil {
 		return "", err
 	}
 	return tokenString, nil
-}
-
-func NewUserUsecase(ur repository.IUserRepository) IUserUsecase {
-	return &userUsecase{ur}
 }
