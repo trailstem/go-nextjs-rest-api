@@ -20,6 +20,10 @@ type userUsecase struct {
 	ur repository.IUserRepository
 }
 
+/*
+以下usecase具体実装
+*/
+
 // SignUp implements IUserUsecase.
 func (uu *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
 
