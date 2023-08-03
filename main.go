@@ -18,7 +18,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	e := router.NewRouter(userController)
-	// サーバー起動
-	e.Logger.Fatal(e.Start(":8080"))
+	router := router.NewRouter()
+	//ルータ設定とサーバ起動処理
+	router.SetupRoutesAndStart(userController)
 }
