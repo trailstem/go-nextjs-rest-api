@@ -10,9 +10,7 @@ import (
 
 func main() {
 	db := db.NewDB()
-	userRepository := repository.NewUserRepository(db)
-	userUsecase := usecase.NewUserUsecase(userRepository)
-	userController := controller.NewUserController(userUsecase)
+	userController := controller.NewUserController(usecase.NewUserUsecase(repository.NewUserRepository(db)))
 	e := router.NewRouter(userController)
 	// サーバー起動
 	e.Logger.Fatal(e.Start(":8080"))
