@@ -1,16 +1,23 @@
 package main
 
 import (
-	"github.com/trailstem/go-nextjs-rest-api/controller"
+	"log"
+
 	"github.com/trailstem/go-nextjs-rest-api/db"
-	"github.com/trailstem/go-nextjs-rest-api/repository"
+	"github.com/trailstem/go-nextjs-rest-api/di"
 	"github.com/trailstem/go-nextjs-rest-api/router"
-	"github.com/trailstem/go-nextjs-rest-api/usecase"
 )
 
 func main() {
 	db := db.NewDB()
-	userController := controller.NewUserController(usecase.NewUserUsecase(repository.NewUserRepository(db)))
+	//以下wireを使用しない場合のコンストラクタインジェクション
+	// userController := controller.NewUserController(usecase.NewUserUsecase(repository.NewUserRepository(db)))
+
+	//DIツールwireを使用してDI実現
+	userController, err := di.InitializeApp(db)
+	if err != nil {
+		log.Fatalln(err)
+	}
 	e := router.NewRouter(userController)
 	// サーバー起動
 	e.Logger.Fatal(e.Start(":8080"))
