@@ -3,6 +3,7 @@ package usecase
 import (
 	"github.com/trailstem/go-nextjs-rest-api/model"
 	"github.com/trailstem/go-nextjs-rest-api/repository"
+	validater "github.com/trailstem/go-nextjs-rest-api/validator"
 )
 
 type ITaskUsecase interface {
@@ -15,10 +16,11 @@ type ITaskUsecase interface {
 
 type taskUsecase struct {
 	tr repository.ITaskRepository
+	tv validater.ITaskValidator
 }
 
-func NewTaskUsecase(tr repository.ITaskRepository) ITaskUsecase {
-	return &taskUsecase{tr}
+func NewTaskUsecase(tr repository.ITaskRepository, tv validater.ITaskValidator) ITaskUsecase {
+	return &taskUsecase{tr, tv}
 }
 
 func (tu *taskUsecase) GetAllTasks(userId uint) ([]model.TaskResponse, error) {
@@ -55,6 +57,11 @@ func (tu *taskUsecase) GetTaskById(userId uint, taskId uint) (model.TaskResponse
 
 func (tu *taskUsecase) CreateTask(task model.Task) (model.TaskResponse, error) {
 
+	// validation
+	if err := tu.tv.TaskValidate(task); err != nil {
+		return model.TaskResponse{}, err
+	}
+
 	//タスクが作成された時点でtaskには作成後のタスク情報がポインタ型なので格納されている
 	if err := tu.tr.CreateTask(&task); err != nil {
 		return model.TaskResponse{}, err
@@ -69,6 +76,11 @@ func (tu *taskUsecase) CreateTask(task model.Task) (model.TaskResponse, error) {
 }
 
 func (tu *taskUsecase) UpdateTask(task model.Task, userId uint, taskId uint) (model.TaskResponse, error) {
+
+	// validation
+	if err := tu.tv.TaskValidate(task); err != nil {
+		return model.TaskResponse{}, err
+	}
 
 	if err := tu.tr.UpdateTask(&task, userId, taskId); err != nil {
 		return model.TaskResponse{}, err
