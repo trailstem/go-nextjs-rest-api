@@ -10,6 +10,7 @@ import (
 	"github.com/trailstem/go-nextjs-rest-api/controller"
 	"github.com/trailstem/go-nextjs-rest-api/repository"
 	"github.com/trailstem/go-nextjs-rest-api/usecase"
+	"github.com/trailstem/go-nextjs-rest-api/validator"
 	"gorm.io/gorm"
 )
 
@@ -17,10 +18,12 @@ import (
 
 func InitializeApp(db *gorm.DB) (*AppControllers, error) {
 	iUserRepository := repository.NewUserRepository(db)
-	iUserUsecase := usecase.NewUserUsecase(iUserRepository)
+	iUserValidator := validator.NewUserValidator()
+	iUserUsecase := usecase.NewUserUsecase(iUserRepository, iUserValidator)
 	iUserController := controller.NewUserController(iUserUsecase)
 	iTaskRepository := repository.NewTaskRepository(db)
-	iTaskUsecase := usecase.NewTaskUsecase(iTaskRepository)
+	iTaskValidator := validator.NewTaskValidator()
+	iTaskUsecase := usecase.NewTaskUsecase(iTaskRepository, iTaskValidator)
 	iTaskController := controller.NewTaskController(iTaskUsecase)
 	appControllers := NewAppControllers(iUserController, iTaskController)
 	return appControllers, nil
