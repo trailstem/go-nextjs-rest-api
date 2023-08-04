@@ -14,11 +14,11 @@ func main() {
 	// userController := controller.NewUserController(usecase.NewUserUsecase(repository.NewUserRepository(db)))
 
 	//DIツールwireを使用してDI実現
-	userController, err := di.InitializeApp(db)
+	appControllers, err := di.InitializeApp(db)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	router := router.NewRouter()
 	//ルータ設定とサーバ起動処理
-	router.SetupRoutesAndStart(userController)
+	router.SetupRoutesAndStart(appControllers)
 }
